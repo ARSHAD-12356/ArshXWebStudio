@@ -1,0 +1,30 @@
+{
+  "name": "inference-edge",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node --require ./scripts/fat32-fs-fix.cjs ./scripts/dev.cjs",
+    "build": "node --require ./scripts/fat32-fs-fix.cjs node_modules/next/dist/bin/next build",
+    "start": "node --require ./scripts/fat32-fs-fix.cjs node_modules/next/dist/bin/next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gsap/react": "2.1.2",
+    "gsap": "3.12.7",
+    "lenis": "1.1.20",
+    "lucide-react": "0.460.0",
+    "next": "15.3.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "topojson-client": "3.1.0",
+    "world-atlas": "2.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.3",
+    "@types/react": "19.1.2",
+    "@types/react-dom": "19.1.2",
+    "@types/topojson-client": "3.1.5",
+    "@types/topojson-specification": "1.0.5",
+    "typescript": "5.8.3"
+  }
+}
