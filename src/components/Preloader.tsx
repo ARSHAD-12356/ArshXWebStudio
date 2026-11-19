@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useRef } from "react";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { emitPreloaderDone } from "@/lib/events";
 import { lockScroll } from "@/lib/lenis";
 import AxMark from "./AxMark";
@@ -24,8 +24,9 @@ const TIMING = {
   letters: 0.8,
   letterStagger: 0.055,
   tagline: 0.7,
-  hold: 0.6,
-  exit: 0.7,
+  // Once the tagline lands: a short beat, then a quick, smooth open into the page.
+  hold: 0.3,
+  exit: 0.6,
 };
 
 /** true = full intro on every page load. false = once per browser session (repeat loads: 0.3 s fade). */
@@ -62,7 +63,7 @@ export default function Preloader() {
       const lines = qa<HTMLSpanElement>(".axl-line");
       const tagText = q<HTMLSpanElement>(".axl-tag-text");
       const dots = qa<HTMLSpanElement>(".axl-dot");
-      const animated = [ringWrap, ringLine, ringGlow, spark, content, mark, ...letters, ...lines, tagText, ...dots];
+      const animated = [bg, ringWrap, ringLine, ringGlow, spark, content, mark, ...letters, ...lines, tagText, ...dots];
 
       lockScroll(true);
 
@@ -87,7 +88,9 @@ export default function Preloader() {
         lockScroll(false);
         emitPreloaderDone();
         window.dispatchEvent(new Event("preloader:done"));
-        ScrollTrigger.refresh();
+        // No ScrollTrigger.refresh() here: it blocked the main thread ~50 ms right as the page
+        // appeared. Nothing changes layout at handoff (scrollbar space is reserved via
+        // scrollbar-gutter), and PageEffects already refreshes once fonts have loaded.
       };
 
       /* ---- Final frame, used by reduced motion ---- */
@@ -208,13 +211,23 @@ export default function Preloader() {
             stagger: 0.06,
           }, "<0.05")
 
+          // Reveal is done: drop the now-idle filters, clip and per-letter layers during the calm hold,
+          // so the exit only has to move a few composited layers (keeps the page-open smooth).
+          .set([mark, ...letters, ...lines, ...dots, tagText], { filter: "none", clipPath: "none", willChange: "auto" }, ">")
+
           // 2.25 – 2.50 s · Hold on the final frame; the ring breathes once
           .to(ringGlow, { opacity: 1, duration: TIMING.hold / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, ">")
 
-          // 2.50 – 3.10 s · Exit: ring expands like a portal, content recedes, background fades
-          .to(ringWrap, { scale: 4, opacity: 0, duration: TIMING.exit, ease: "expo.in" }, ">")
-          .to(content, { scale: 0.92, opacity: 0, filter: "blur(6px)", duration: TIMING.exit * 0.8, ease: "power2.in" }, "<")
-          .to(bg, { opacity: 0, duration: TIMING.exit * 0.6, ease: "power1.in" }, `<${TIMING.exit * 0.4}`);
+          // Exit: quick but smooth portal open. Eases start moving immediately (no stall-then-jump):
+          // the ring expands and fades, the content recedes, the background dissolves into the page.
+          .addLabel("exit", ">")
+          // Drop the big glow shadows first so the GPU isn't scaling them up across the whole screen.
+          .to(ringGlow, { opacity: 0, duration: TIMING.exit * 0.3, ease: "power1.out" }, "exit")
+          .to(ringWrap, { scale: 3, duration: TIMING.exit, ease: "power2.inOut" }, "exit")
+          .to(ringWrap, { opacity: 0, duration: TIMING.exit * 0.7, ease: "power1.in" }, `exit+=${TIMING.exit * 0.3}`)
+          // (no blur here: re-blurring the logo + text every frame was the main cause of the exit lag)
+          .to(content, { scale: 0.92, opacity: 0, duration: TIMING.exit * 0.7, ease: "power2.out" }, "exit")
+          .to(bg, { opacity: 0, duration: TIMING.exit * 0.75, ease: "power1.inOut" }, `exit+=${TIMING.exit * 0.25}`);
         // 3.10 s · onComplete → handoff()
 
         // ?loaderDebug exposes the timeline (window.__axLoader) for frame-by-frame review.

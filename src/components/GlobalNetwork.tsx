@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { Globe2 } from "lucide-react";
 import { gsap, isMobile, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { createGlobe } from "@/lib/globe";
+import { cssVar } from "@/lib/theme";
 import { B } from "@/lib/config";
 import Reveal from "./Reveal";
 
@@ -13,6 +14,7 @@ function useStars(ref: React.RefObject<HTMLCanvasElement | null>) {
     const c = ref.current!;
     const ctx = c.getContext("2d")!;
     const reduced = prefersReducedMotion();
+    const starColor = cssVar("--globe-star", "#ffffff"); // read once, not per frame
     let raf = 0;
     let stars: { x: number; y: number; r: number; p: number; s: number }[] = [];
     const resize = () => {
@@ -31,7 +33,7 @@ function useStars(ref: React.RefObject<HTMLCanvasElement | null>) {
     };
     const draw = (t: number) => {
       ctx.clearRect(0, 0, c.offsetWidth, c.offsetHeight);
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = starColor;
       for (const st of stars) {
         ctx.globalAlpha = 0.15 + 0.55 * (0.5 + 0.5 * Math.sin(t / 1000 * st.s + st.p));
         ctx.beginPath();
@@ -60,13 +62,13 @@ export default function GlobalNetwork() {
     () =>
       createGlobe(globe.current!, {
         step: 2.2,
-        dotColor: "#e9e4f2",
+        dotColor: cssVar("--globe-dot", "#e6eeff"),
         dotSize: 4.2,
         radius: 0.96,
         speed: 0.08,
         tilt: 0.42,
         rotation: 0.6,
-        sphere: ["#2a1424", "#120a10"],
+        sphere: [cssVar("--globe-core", "#0a1a44"), cssVar("--globe-edge", "#030a1e")],
       }),
     [],
   );

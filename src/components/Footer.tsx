@@ -63,7 +63,7 @@ export default function Footer() {
       <div className="container">
         <div className="f-top">
           <div className="f-brand">
-            <Logo />
+            <Logo idPrefix="axFooter" />
             <p>Powerful solutions to help your business grow globally. Experience our superior performance, proven by the largest online businesses.</p>
             <ul className="f-social">
               {SOCIAL.map(({ I, n }) => (
