@@ -5,7 +5,6 @@ import { Bot, Cpu, Database, Image as ImageIcon, Layers, MessageSquare, Mic, Zap
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { badgeIn, cardsIn, cursorGlow } from "@/lib/hooks";
 import { createGlobe } from "@/lib/globe";
-import { cssVar } from "@/lib/theme";
 import { B } from "@/lib/config";
 import Reveal from "./Reveal";
 
@@ -15,15 +14,14 @@ function GlobeVisual() {
     () =>
       createGlobe(ref.current!, {
         step: 2.4,
-        dotColor: cssVar("--globe-dot-dim", "#4f5f80"),
+        dotColor: "#6b5a5a",
         dotSize: 2.6,
         radius: 0.92,
         speed: 0.12,
         tilt: 0.35,
         rotation: -0.4,
-        sphere: [cssVar("--globe-core-dim", "#0c1630"), cssVar("--globe-edge", "#030a1e")],
+        sphere: ["#1d1416", "#0e0a0b"],
         cities: 14,
-        cityColor: cssVar("--ax-cyan", "#00d8fd"),
       }),
     [],
   );
@@ -134,10 +132,7 @@ function AutoscaleVisual() {
           <path key={i} d={d} className="trace" />
         ))}
         {AUTOSCALE.map((d, i) => (
-          <g key={`p${i}`} className="pulse-pair pulse-h">
-            <path d={d} className="pulse-glow" pathLength={1000} />
-            <path d={d} className="pulse" pathLength={1000} />
-          </g>
+          <path key={`p${i}`} d={d} className="pulse pulse-h" pathLength={1000} />
         ))}
         <g className="v-ticks">
           {Array.from({ length: 18 }).map((_, i) => (
@@ -225,9 +220,9 @@ export default function Benefits() {
       gsap.fromTo(".v-beam", { y: -60, opacity: 0 }, { y: 30, opacity: 1, duration: 1.6, ease: "power2.in", repeat: -1, repeatDelay: 0.8, stagger: 0.8 });
 
       // Pulses along PCB lines (left → right) and on the endpoint card.
-      root.current!.querySelectorAll<SVGGElement>(".pulse-h").forEach((pair) => {
+      root.current!.querySelectorAll<SVGPathElement>(".pulse-h").forEach((p) => {
         gsap.fromTo(
-          pair.children,
+          p,
           { strokeDashoffset: 80 },
           { strokeDashoffset: -1000, duration: gsap.utils.random(1.8, 3), ease: "none", repeat: -1, delay: gsap.utils.random(0, 2) },
         );

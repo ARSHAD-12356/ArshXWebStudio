@@ -14,13 +14,13 @@ const jakarta = Plus_Jakarta_Sans({
 // Preloader fonts: name (Montserrat) + tagline (DM Sans)
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["400", "700", "800"],
+  weight: ["400", "800"],
   variable: "--font-montserrat",
   display: "swap",
 });
 const dmSans = DM_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500"],
   variable: "--font-dmsans",
   display: "swap",
 });

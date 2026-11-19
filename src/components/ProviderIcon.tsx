@@ -15,7 +15,7 @@ export default function ProviderIcon({ kind, size = 22 }: { kind: ProviderKind; 
     case "swirl2":
       return (
         <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" style={{ fill: kind === "swirl" ? "var(--ax-blue)" : "var(--ax-blue-light)" }} />
+          <circle cx="12" cy="12" r="9" fill={kind === "swirl" ? "#FF4F12" : "#F97316"} />
           <path d="M16 9a5 5 0 1 0 1 4h-5" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" />
         </svg>
       );
@@ -30,8 +30,8 @@ export default function ProviderIcon({ kind, size = 22 }: { kind: ProviderKind; 
     case "m":
       return (
         <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 20V4h4l5 7 5-7h4v16h-4V11l-5 6-5-6v9z" fill="#6366F1" />
-          <path d="M3 4h4v4H3zM17 4h4v4h-4z" fill="#22D3EE" />
+          <path d="M3 20V4h4l5 7 5-7h4v16h-4V11l-5 6-5-6v9z" fill="#F59E0B" />
+          <path d="M3 4h4v4H3zM17 4h4v4h-4z" fill="#DC2626" />
         </svg>
       );
     case "grid":
@@ -53,8 +53,8 @@ export default function ProviderIcon({ kind, size = 22 }: { kind: ProviderKind; 
     case "book":
       return (
         <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="4" y="4" width="16" height="16" rx="4" fill="#7C5CFF" />
-          <path d="M4 13h16" stroke="#B4A5FF" strokeWidth="3" />
+          <rect x="4" y="4" width="16" height="16" rx="4" fill="#FB923C" />
+          <path d="M4 13h16" stroke="#FDBA74" strokeWidth="3" />
         </svg>
       );
   }

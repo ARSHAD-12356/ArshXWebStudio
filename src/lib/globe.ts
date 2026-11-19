@@ -186,7 +186,7 @@ export function createGlobe(canvas: HTMLCanvasElement, opts: GlobeOptions): () =
         const py = cy - q.y * r;
         const pulse = 0.6 + 0.4 * Math.sin(t / 500 + c.phase);
         ctx.globalAlpha = 0.25 * pulse * q.z;
-        ctx.fillStyle = opts.cityColor ?? "#00d8fd"; // fallback = --ax-cyan
+        ctx.fillStyle = opts.cityColor ?? "#ff5a14";
         ctx.beginPath();
         ctx.arc(px, py, 7, 0, Math.PI * 2);
         ctx.fill();

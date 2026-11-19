@@ -3,8 +3,6 @@
 import { useRef } from "react";
 import { Aperture, Box, LayoutGrid, Sparkles, Triangle, Waves } from "lucide-react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
-import { onPreloaderDone } from "@/lib/events";
-import AxMark from "./AxMark";
 
 /** Left-side traces, drawn from the outer end towards the chip (viewBox 1440 × 420). Mirrored for the right. */
 const LEFT_TRACES = [
@@ -32,33 +30,20 @@ export default function HeroCircuit() {
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
-      // Light pulses travelling along the traces towards the chip. Each pulse is a glow + core
-      // stroke pair (no SVG blur filter: re-blurring the circuit every frame made the page-open lag).
-      // They stay paused while the preloader covers the page and switch on as it opens.
-      const pulses = gsap.utils.toArray<SVGGElement>(".pulse-pair", root.current).map((pair) =>
+      // Light pulses travelling along the traces towards the chip.
+      root.current!.querySelectorAll<SVGPathElement>(".pulse").forEach((p) => {
         gsap.fromTo(
-          pair.children,
+          p,
           { strokeDashoffset: 80 },
           {
             strokeDashoffset: -1000,
             duration: gsap.utils.random(1.6, 2.8),
             ease: "none",
             repeat: -1,
+            delay: gsap.utils.random(0, 2.5),
             repeatDelay: gsap.utils.random(0.2, 1.6),
-            paused: true,
           },
-        ),
-      );
-      const chipIn = gsap.from(root.current!.querySelector(".chip"), {
-        scale: 0.85,
-        opacity: 0,
-        duration: 1.2,
-        ease: "expo.out",
-        paused: true,
-      });
-      const stopWaiting = onPreloaderDone(() => {
-        chipIn.play();
-        pulses.forEach((t) => gsap.delayedCall(gsap.utils.random(0.2, 2.2), () => t.play()));
+        );
       });
 
       // Floating tiles (sine loop, different phases) + mouse parallax per depth.
@@ -97,10 +82,8 @@ export default function HeroCircuit() {
         });
       });
 
-      return () => {
-        stopWaiting();
-        window.removeEventListener("pointermove", onMove);
-      };
+      gsap.from(".chip", { scale: 0.85, opacity: 0, duration: 1.2, delay: 3.2, ease: "expo.out" });
+      return () => window.removeEventListener("pointermove", onMove);
     },
     { scope: root },
   );
@@ -111,10 +94,7 @@ export default function HeroCircuit() {
         <path key={`t${i}`} d={d} className="trace" />
       ))}
       {LEFT_TRACES.map((d, i) => (
-        <g key={`p${i}`} className="pulse-pair">
-          <path d={d} className="pulse-glow" pathLength={1000} />
-          <path d={d} className="pulse" pathLength={1000} />
-        </g>
+        <path key={`p${i}`} d={d} className="pulse" pathLength={1000} />
       ))}
     </>
   );
@@ -122,16 +102,23 @@ export default function HeroCircuit() {
   return (
     <div className="circuit" ref={root} aria-hidden="true">
       <svg className="circuit-svg" viewBox="0 0 1440 420" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <filter id="pulseGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
         <g>{traces}</g>
         <g transform="translate(1440 0) scale(-1 1)">{traces}</g>
         {BOTTOM_TRACES.map((d, i) => (
           <path key={`b${i}`} d={d} className="trace" />
         ))}
         {BOTTOM_TRACES.map((d, i) => (
-          <g key={`bp${i}`} className="pulse-pair">
-            <path d={d} className="pulse-glow" pathLength={1000} />
-            <path d={d} className="pulse" pathLength={1000} />
-          </g>
+          <path key={`bp${i}`} d={d} className="pulse" pathLength={1000} />
         ))}
         {/* chip pins */}
         {[146, 158, 170, 182, 194].map((y) => (
@@ -145,7 +132,7 @@ export default function HeroCircuit() {
         ))}
       </svg>
       <div className="chip" style={{ left: "50%", top: `${(170 / 420) * 100}%` }}>
-        <AxMark className="chip-mark" idPrefix="axChip" />
+        <span>AI</span>
       </div>
       {TILES.map(({ x, y, d, Icon, small }, i) => (
         <div

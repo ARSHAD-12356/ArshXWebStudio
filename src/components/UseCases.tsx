@@ -56,7 +56,7 @@ const AutoIllo = () => (
       [78, 28],
     ].map(([x, y], i) => (
       <span className="uc-pin" key={i} style={{ left: `${x}%`, top: `${y}%` }}>
-        <MapPin size={26} strokeWidth={1.5} />
+        <MapPin size={26} fill="#FF4F12" stroke="#fff" strokeWidth={1.5} />
       </span>
     ))}
   </div>
