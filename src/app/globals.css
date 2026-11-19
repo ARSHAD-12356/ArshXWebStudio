@@ -314,85 +314,162 @@ main {
 }
 
 /* ==========================================================================
-   Preloader (ArshXWebStudio)
+   Preloader (ArshX Web Studio v2: glowing ring)
+   All sizes derive from --ring so every screen keeps the reference proportions.
    ========================================================================== */
-.preloader {
-  --ax-mark: 92px;
-  --ax-gap: 34px;
+.axl {
+  --ax-bg: #01040c;
+  --ax-navy: #06163a;
+  --ax-blue: #0b6efe;
+  --ax-blue-light: #2f8bff;
+  --ax-cyan: #00d8fd;
+  --ax-silver: #c8d1e0;
+  --ax-text: #f2f5fa;
+  --ax-muted: #aeb9cc;
+  --ring: min(640px, 86vw, 82vh);
   position: fixed;
   inset: 0;
   z-index: 1000;
   display: grid;
   place-items: center;
-  background: #1e1e20;
   overflow: hidden;
 }
-.preloader.is-animating .ax-lockup,
-.preloader.is-animating .ax-slot,
-.preloader.is-animating .ax-ring,
-.preloader.is-animating .ax-mark,
-.preloader.is-animating .ax-ch,
-.preloader.is-animating .ax-curtain {
-  will-change: transform, opacity, filter, clip-path;
+.axl-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1200px 200px at 50% 105%, rgba(11, 110, 254, 0.18), transparent 70%),
+    radial-gradient(900px 520px at 50% 50%, var(--ax-navy) 0%, #020a1c 45%, var(--ax-bg) 80%),
+    var(--ax-bg);
 }
-.ax-lockup {
-  display: flex;
-  align-items: center;
-  gap: var(--ax-gap);
-  padding: 0 16px;
-  transform-origin: 50% 50%;
-}
-.ax-slot {
+.axl-stage {
   position: relative;
-  flex: 0 0 var(--ax-mark);
-  width: var(--ax-mark);
-  height: var(--ax-mark);
+  width: var(--ring);
+  height: var(--ring);
+  display: grid;
+  place-items: center;
 }
-.ax-ring,
-.ax-mark {
+.axl-ringwrap {
+  position: absolute;
+  inset: 0;
+}
+.axl-ring {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 3px var(--ax-blue-light)) drop-shadow(0 0 14px rgba(11, 110, 254, 0.85));
+}
+.axl-ring-line {
+  fill: none;
+  stroke: var(--ax-blue-light);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+.axl-ring-glow {
+  position: absolute;
+  inset: 1%;
+  border-radius: 50%;
+  box-shadow:
+    0 0 30px var(--ax-blue),
+    0 0 90px rgba(11, 110, 254, 0.6),
+    inset 0 0 30px rgba(11, 110, 254, 0.5),
+    inset 0 0 120px rgba(11, 110, 254, 0.15);
   opacity: 0;
 }
-.ax-word {
+.axl-spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: #e8fdff;
+  box-shadow: 0 0 6px 2px var(--ax-cyan), 0 0 18px 6px rgba(0, 216, 253, 0.65), 0 0 40px 10px rgba(11, 110, 254, 0.35);
+  opacity: 0;
+}
+.axl-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: 50% 50%;
+}
+.axl-mark {
+  width: calc(var(--ring) * 0.506);
+  opacity: 0;
+}
+.axl-mark-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 22px rgba(11, 110, 254, 0.5));
+}
+.axl-name {
+  margin-top: calc(var(--ring) * 0.04);
   font-family: var(--font-montserrat), "Montserrat", ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(28px, 4.2vw, 78px);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  line-height: 1;
-  color: #fff;
+  font-size: calc(var(--ring) * 0.087);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  color: var(--ax-text);
   white-space: nowrap;
-  margin-right: -0.06em;
 }
-.ax-grp {
-  display: inline;
-}
-.ax-ch {
+.axl-ch {
   display: inline-block;
   opacity: 0;
 }
-.ax-word.twoTone .rest .ax-ch {
-  font-weight: 500;
+.axl-ch.axl-bold {
+  font-weight: 800;
+  background: linear-gradient(180deg, #ffffff 15%, var(--ax-silver) 60%, #8e9bb2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
-.ax-word.wrap .ax-grp {
+.axl-space {
+  display: inline-block;
+  width: 0.26em;
+}
+.axl-tag {
+  margin-top: calc(var(--ring) * 0.042);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--ring) * 0.028);
+}
+.axl-line {
   display: block;
+  width: calc(var(--ring) * 0.078);
+  height: 1.5px;
 }
-.ax-word.wrap .rest {
-  margin-top: 0.12em;
+.axl-line.left {
+  background: linear-gradient(90deg, transparent, var(--ax-blue));
+  transform-origin: 100% 50%;
 }
-.ax-curtain {
-  position: absolute;
-  inset: 0;
-  background: #0a0a0a;
-  clip-path: inset(100% 0 0 0);
+.axl-line.right {
+  background: linear-gradient(90deg, var(--ax-blue), transparent);
+  transform-origin: 0% 50%;
 }
-@media (max-width: 639px) {
-  .preloader {
-    --ax-mark: 56px;
-    --ax-gap: 18px;
-  }
+.axl-tag-text {
+  font-family: var(--font-dmsans), "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: calc(var(--ring) * 0.0315);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  margin-right: -0.32em;
+  color: var(--ax-muted);
+  white-space: nowrap;
+  opacity: 0;
+}
+.axl-dot {
+  display: inline-block;
+  margin: 0 0.5em;
+  color: var(--ax-blue);
+  transform-origin: 50% 55%;
 }
 
 /* ==========================================================================

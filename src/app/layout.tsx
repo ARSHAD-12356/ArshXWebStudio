@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat, Plus_Jakarta_Sans } from "next/font/google";
+import { DM_Sans, Montserrat, Plus_Jakarta_Sans } from "next/font/google";
 import { CONFIG } from "@/lib/config";
+import Preloader from "@/components/Preloader";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -10,11 +11,17 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-// Preloader wordmark font
+// Preloader fonts: name (Montserrat) + tagline (DM Sans)
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["500", "700", "800"],
+  weight: ["400", "800"],
   variable: "--font-montserrat",
+  display: "swap",
+});
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-dmsans",
   display: "swap",
 });
 
@@ -25,18 +32,19 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0A0A0A",
+  themeColor: "#01040C",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${montserrat.variable} is-locked`}>
+    <html lang="en" className={`${jakarta.variable} ${montserrat.variable} ${dmSans.variable} is-locked`}>
       <body>
         <noscript>
-          <style>{`html.is-locked,html.is-locked body{overflow:auto!important}.preloader{display:none!important}`}</style>
+          <style>{`html.is-locked,html.is-locked body{overflow:auto!important}.axl{display:none!important}`}</style>
         </noscript>
+        <Preloader />
         {children}
       </body>
     </html>

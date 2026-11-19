@@ -1,5 +1,4 @@
 import SmoothScroll from "@/components/SmoothScroll";
-import Preloader from "@/components/Preloader";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import UseAiFaster from "@/components/UseAiFaster";
@@ -17,7 +16,6 @@ import PageEffects from "@/components/PageEffects";
 export default function Home() {
   return (
     <SmoothScroll>
-      <Preloader />
       <Navbar />
       <main>
         <Hero />
